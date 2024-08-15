@@ -81,7 +81,7 @@ class TestUserFeedbackClient(unittest.TestCase):
         cls.client = UserFeedbackClient()
 
     def test_get_feedback_complete_config(self):
-        """Test with a fully completed configuration - expect 'Everything looks good so far!'."""
+        """Test with a fully completed configuration - expect 'Everything looks good!'."""
 
         # Load a fully completed config (you'll need to create this)
         with open("activity_config_example.json", "r") as f:
@@ -90,7 +90,7 @@ class TestUserFeedbackClient(unittest.TestCase):
         feedback = self.client.get_feedback(self.config_structure, complete_config)
 
         # Assertion
-        self.assertIn("everything looks good so far!", feedback.lower())  # Case-insensitive check
+        self.assertIn("everything looks good!", feedback.lower())  # Case-insensitive check
 
     def test_get_feedback_missing_fields(self):
         """Test with missing fields - expect prompts for those fields."""

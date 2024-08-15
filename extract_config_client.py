@@ -16,7 +16,7 @@ class ExtractConfigClient:
             system_instruction="""You are an expert in extracting configuration details for an e-learning platform from text. You will be given a JSON configuration schema, text input from an educator containing data to extract, and the current JSON configuration to be modified."""
         )
 
-    def extract_values(self, text, current_config):
+    def extract_values(self, prev_system_response, user_input, current_config):
         """Extracts configuration values from the given text based on the structure.
 
         Args:
@@ -31,16 +31,17 @@ class ExtractConfigClient:
 
         payload = {
             "config_schema": self.schema,
-            "text": text,
+            "prev_system_response": prev_system_response,
+            "user_input": user_input,
             "current_config": current_config
         }
 
         json_payload = json.dumps(payload, indent=2)
         prompt = (
-            "The following is a JSON object containing the schema, the text input, and the current configuration:\n\n"
+            "The following is a JSON object containing the schema, the user input text, and the current configuration:\n\n"
             f"{json_payload}\n\n"
-            "1. Extract the relevant information from the text input\n"
-            "2. If changes were proposed, update the current configuration using the extracted values, otherwise, keep the current config 'as is'\n"
+            "1. Extract the relevant information from the user input text, given in response to the 'prev_system_response' text.\n"
+            "2. If changes were proposed, update the current configuration using the extracted values, otherwise, keep the current config 'as is'.\n"
             "3. Return the configuration as a JSON object, ensuring the JSON is valid and does not contain any extra characters or formatting.\n"
         )
 

@@ -17,7 +17,7 @@
       "type": "array",
       "items": {
         "type": "object",
-        "description": "Boards are contexts that contain many resources such a canvas, bucket view, workspace, monitor, and TODOs (at least one board is required).",
+        "description": "Boards are contexts that contain many resources such a canvas, buckets, bucket view, workspace, monitor, and TODOs (at least one board is required).",
         "properties": {
           "board_name": { "type": "string", "description": "The name of the board." },
           "canvas": {
@@ -83,7 +83,66 @@
       "items": { "type": "string" },
       "minItems": 1,
       "description": "Groups are used to cluster students or devices that both enable resources to be assigned by group and workspace and TODO tasks to be assigned by group."
+    },
+    "accounts": {
+      "type": "object",
+      "description": "Defines the various accounts (students, teachers, devices) and their group assignments.",
+      "properties": {
+        "students": {
+          "type": "object",
+          "description": "A mapping of student names to their groups and location (x, y coordinates).",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "groups": {
+                "type": "array",
+                "items": { "type": "string" },
+                "minItems": 1
+              },
+              "x": { "type": "integer", "minimum": 0 },
+              "y": { "type": "integer", "minimum": 0 }
+            },
+            "required": ["groups", "x", "y"]
+          }
+        },
+        "teachers": {
+          "type": "object",
+          "description": "A mapping of teacher names to their groups and location (x, y coordinates).",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "groups": {
+                "type": "array",
+                "items": { "type": "string" },
+                "minItems": 1
+              },
+              "x": { "type": "integer", "minimum": 0 },
+              "y": { "type": "integer", "minimum": 0 }
+            },
+            "required": ["groups", "x", "y"]
+          }
+        },
+        "devices": {
+          "type": "object",
+          "description": "A mapping of device identifiers to their groups and location (x, y coordinates).",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "groups": {
+                "type": "array",
+                "items": { "type": "string" },
+                "minItems": 1
+              },
+              "x": { "type": "integer", "minimum": 0 },
+              "y": { "type": "integer", "minimum": 0 }
+            },
+            "required": ["groups", "x", "y"]
+          }
+        }
+      },
+      "required": ["students", "teachers"] 
     }
   },
-  "required": ["project_name", "phases", "boards", "groups"]
+  "required": ["project_name", "phases", "boards", "groups", "accounts"]
 }
+

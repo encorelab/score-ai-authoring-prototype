@@ -43,7 +43,8 @@ class UserFeedbackClient:
             "    - Provide an answer to the 'user_input' question, but only answer questions about this project configuration; if unrelated, state that you are an AI only able to assist with project configurations.\n"
             "2. If the extracted configuration contains any changes compared to the original configuration:\n"
             "    - Briefly report the types of changes made.\n"
-            "    - If a project name and at least one phase, board, and group were provided, state 'Everything looks good so far!'; if one is missing, state 'To complete the configuration...' followed by a clear and concise prompt to provide one of those missing items.\n\n"
+            "    - If a project name and at least one phase, board, and group were provided, state 'Everything looks good!'; if one is missing, state 'To complete the configuration...' followed by a clear and concise prompt to provide one of those missing items.\n"
+            "    - Do not use any JSON in your response.\n\n"
         )
         print(prompt)
 

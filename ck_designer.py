@@ -22,8 +22,7 @@ def main():
     # 3. Get initial text input from the user
     ai_text = ("""Hello there!\n
 I'm your new AI assistant, designed to help you streamline the process of setting up new SCORE projects. 
-Ready to get started? Use plain language to tell me about the activity. Or describe the specific project phases or CK Board components you would like us to use or modify.
-We'll work together to ensure your project is complete and accurate. What SCORE activity should we build?\n\n""")
+Ready to get started? Use plain language to tell me about the activity. Or describe the specific project phases or CK Board components you would like us to use or modify. We'll work together to ensure your project is complete and accurate. What SCORE activity should we build?\n\n""")
 
     print(ai_text + "\nInitiating AI voice...")
 
@@ -37,13 +36,14 @@ We'll work together to ensure your project is complete and accurate. What SCORE 
 
     # Play the feedback audio (you might need to install an audio player library like playsound)
     os.system("afplay feedback.mp3")
+    prev_system_response = ai_text
 
     text_input = input("Teacher response: ")
     
     # 4. Extraction and feedback loop
     while True:
         # 4a. Extract configuration values
-        extracted_config = extractor.extract_values(text_input, extracted_config)
+        extracted_config = extractor.extract_values(prev_system_response, text_input, extracted_config)
         print("\nExtracted Configuration:")  #Optional Print Statement
         print(json.dumps(extracted_config, indent=2)+"\nAnalyzing for feedback...\n\n")
             
@@ -63,6 +63,7 @@ We'll work together to ensure your project is complete and accurate. What SCORE 
 
         # Play the feedback audio (you might need to install an audio player library like playsound)
         os.system("afplay feedback.mp3")
+        prev_system_response = feedback
 
         # 4c. Get additional input
         text_input = input("Teacher response (Enter 'exit' to save and quit): ")
