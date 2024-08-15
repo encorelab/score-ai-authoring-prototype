@@ -1,0 +1,89 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "A project is the overall structure that can contain multiple activity phases (a project name is required).",
+  "properties": {
+    "project_name": { 
+      "type": "string", 
+      "description": "The name of the overall project." 
+    },
+    "phases": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1,
+      "description": "Phases are the stages of an activity that determines the assignment of different resources to different students and devices according to groups (at least one phase is required)."
+    },
+    "boards": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "description": "Boards are contexts that contain many resources such a canvas, bucket view, workspace, monitor, and TODOs (at least one board is required).",
+        "properties": {
+          "board_name": { "type": "string", "description": "The name of the board." },
+          "canvas": {
+            "type": "object", 
+            "description": "The canvas is a 2D organizational structure that can store, organize, or be used to create student-generated posts (a canvas exists by default; only one canvas exists per board).",
+            "additionalProperties": {
+              "type": "array", 
+              "description": "An array of group names that can view the canvas during the phase specified by the key (which should be one of the phases defined in the 'phases' array).",
+              "items": { "type": "string" }
+            }
+          },
+          "bucket_view": {
+            "type": "object", 
+            "description": "The bucket view can display 0-4 buckets, showing all the student-generated posts within each bucket.",
+            "additionalProperties": {
+              "type": "array", 
+              "description": "An array of group names that can view the bucket view during the phase specified by the key (which should be one of the phases defined in the 'phases' array).",
+              "items": { "type": "string" }
+            }
+          },
+          "buckets": {
+            "type": "array",
+            "items": { "type": "string" },
+            "minItems": 0,
+            "maxItems": 4,
+            "uniqueItems": true,
+            "description": "Buckets are organizational structures that can store and organize student posts (buckets are optional)."
+          },
+          "monitor_view": {
+            "type": "object", 
+            "description": "The monitor view allows students to see their personal analytics and the teacher to see all students' analytics.",
+            "additionalProperties": {
+              "type": "array", 
+              "description": "An array of group names that can view the monitor view during the phase specified by the key (which should be one of the phases defined in the 'phases' array).",
+              "items": { "type": "string" }
+            }
+          },
+          "todo": {
+            "type": "object", 
+            "description": "The TODO view allows students to define personal or group tasks to be completed; the teacher may also assign tasks for them.",
+            "additionalProperties": {
+              "type": "array", 
+              "description": "An array of group names that can view the TODO view during the phase specified by the key (which should be one of the phases defined in the 'phases' array).",
+              "items": { "type": "string" }
+            }
+          },
+          "workspace": {
+            "type": "object",
+            "description": "The workspace view displays student-assigned activities that involve the generation or peer review of student-generated posts.",
+            "additionalProperties": {
+              "type": "array", 
+              "description": "An array of group names that can view the workspace during the phase specified by the key (which should be one of the phases defined in the 'phases' array).",
+              "items": { "type": "string" }
+            }
+          }
+        },
+        "required": ["board_name"]
+      },
+      "minItems": 1
+    },
+    "groups": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1,
+      "description": "Groups are used to cluster students or devices that both enable resources to be assigned by group and workspace and TODO tasks to be assigned by group."
+    }
+  },
+  "required": ["project_name", "phases", "boards", "groups"]
+}

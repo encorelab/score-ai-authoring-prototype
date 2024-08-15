@@ -1,0 +1,8 @@
+google-cloud-aiplatform
+python-dotenv
+jsonschema
+gTTS
+pydub
+ffmpeg
+pyttsx3
+pyobjc

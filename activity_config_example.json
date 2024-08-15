@@ -1,0 +1,77 @@
+{
+    "project_name": "My Awesome Project",
+    "phases": ["Planning", "Development", "Testing", "Deployment"],
+    "boards": [
+      {
+        "board_name": "Main Board",
+        "canvas": {
+          "Planning": ["Managers", "Developers"],
+          "Development": ["Developers"],
+          "Testing": ["Testers"],
+          "Deployment": ["Managers"]
+        },
+        "bucket_view": {
+          "Planning": [],
+          "Development": ["Developers"],
+          "Testing": ["Testers"],
+          "Deployment": []
+        },
+        "buckets": ["To Do", "In Progress", "Review", "Done"],
+        "monitor_view": {
+          "Planning": [],
+          "Development": [],
+          "Testing": ["Managers"],
+          "Deployment": ["Managers"]
+        },
+        "todo": {
+          "Planning": ["Managers", "Developers"],
+          "Development": ["Developers"],
+          "Testing": ["Testers"],
+          "Deployment": ["Managers"]
+        },
+        "workspace": {
+          "Planning": ["Managers", "Developers"],
+          "Development": ["Developers"],
+          "Testing": ["Testers"],
+          "Deployment": ["Managers"]
+        }
+      },
+      {
+        "board_name": "Marketing Board",
+        "canvas": {
+          "Planning": ["Marketing"],
+          "Development": [],
+          "Testing": [],
+          "Deployment": []
+        },
+        "bucket_view": {
+          "Planning": [],
+          "Development": [],
+          "Testing": [],
+          "Deployment": []
+        },
+        "buckets": [],
+        "monitor_view": {
+          "Planning": [],
+          "Development": [],
+          "Testing": [],
+          "Deployment": ["Marketing"]
+        },
+        "todo": {
+          "Planning": ["Marketing"],
+          "Development": [],
+          "Testing": [],
+          "Deployment": []
+        },
+        "workspace": {
+          "Planning": ["Marketing"],
+          "Development": [],
+          "Testing": [],
+          "Deployment": []
+        }
+      }
+    ],
+    "groups": ["Everyone", "Managers", "Developers", "Marketing", "Testers"]
+  }
+  
+  
