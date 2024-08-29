@@ -1,6 +1,11 @@
 {
-    "project_name": "",
-    "phases": [],
-    "boards": [],
-    "groups": []
-  }  
+  "project_name": "",
+  "phases": [],
+  "boards": [],
+  "groups": [],
+  "accounts": {
+      "students": {},
+      "teachers": {},
+      "devices": {}
+  }
+}
