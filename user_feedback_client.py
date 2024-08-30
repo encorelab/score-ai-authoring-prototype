@@ -46,7 +46,6 @@ class UserFeedbackClient:
             "    - If a project name and at least one phase, board, and group were provided, state 'Everything looks good!'; if one is missing, state 'To complete the configuration...' followed by a clear and concise prompt to provide one of those missing items.\n"
             "    - Do not use any JSON in your response.\n\n"
         )
-        print(prompt)
 
         # Call the model to predict and get results in string format
         generation_config = {

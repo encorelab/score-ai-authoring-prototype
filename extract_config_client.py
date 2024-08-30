@@ -41,7 +41,7 @@ class ExtractConfigClient:
             "The following is a JSON object containing the schema, the user input text, and the current configuration:\n\n"
             f"{json_payload}\n\n"
             "1. Extract the relevant information from the user input text, given in response to the 'prev_system_response' text.\n"
-            "2. If changes were proposed, update the current configuration using the extracted values, otherwise, keep the current config 'as is'.\n"
+            f"2. If changes were proposed, update the current configuration using the extracted values, otherwise, keep the current config 'as is'. Smaller y values represent the front of the classroom.\n"
             "3. Return the configuration as a JSON object, ensuring the JSON is valid and does not contain any extra characters or formatting.\n"
         )
 

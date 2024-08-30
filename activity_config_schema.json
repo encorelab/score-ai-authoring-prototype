@@ -9,9 +9,16 @@
     },
     "phases": {
       "type": "array",
-      "items": { "type": "string" },
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "board": { "type": "string" }
+        },
+        "required": ["name", "board"]
+      },
       "minItems": 1,
-      "description": "Phases are the stages of an activity that determines the assignment of different resources to different students and devices according to groups (at least one phase is required)."
+      "description": "Phases are the stages of an activity that determines the assignment of different resources to different students and devices according to groups (at least one phase is required). Each phase must be associated with exactly one board."
     },
     "boards": {
       "type": "array",
@@ -86,11 +93,11 @@
     },
     "accounts": {
       "type": "object",
-      "description": "Defines the various accounts (students, teachers, devices) and their group assignments.",
+      "description": "Defines the various accounts (students, teachers, devices), their group assignments, and their classroom (x, y coordinates, where y=0 is the front).",
       "properties": {
         "students": {
           "type": "object",
-          "description": "A mapping of student names to their groups and location (x, y coordinates).",
+          "description": "A mapping of student names to their groups and classroom location.",
           "additionalProperties": {
             "type": "object",
             "properties": {
@@ -99,15 +106,15 @@
                 "items": { "type": "string" },
                 "minItems": 1
               },
-              "x": { "type": "integer", "minimum": 0 },
-              "y": { "type": "integer", "minimum": 0 }
+              "x": { "type": "integer", "minimum": 0, "maximum": 200 },
+              "y": { "type": "integer", "minimum": 0, "maximum": 100 }
             },
             "required": ["groups", "x", "y"]
           }
         },
         "teachers": {
           "type": "object",
-          "description": "A mapping of teacher names to their groups and location (x, y coordinates).",
+          "description": "A mapping of teacher names to their groups and classroom location.",
           "additionalProperties": {
             "type": "object",
             "properties": {
@@ -116,15 +123,15 @@
                 "items": { "type": "string" },
                 "minItems": 1
               },
-              "x": { "type": "integer", "minimum": 0 },
-              "y": { "type": "integer", "minimum": 0 }
+              "x": { "type": "integer", "minimum": 0, "maximum": 200 },
+              "y": { "type": "integer", "minimum": 0, "maximum": 100 }
             },
             "required": ["groups", "x", "y"]
           }
         },
         "devices": {
           "type": "object",
-          "description": "A mapping of device identifiers to their groups and location (x, y coordinates).",
+          "description": "A mapping of device identifiers to their groups and classroom location.",
           "additionalProperties": {
             "type": "object",
             "properties": {
@@ -133,8 +140,8 @@
                 "items": { "type": "string" },
                 "minItems": 1
               },
-              "x": { "type": "integer", "minimum": 0 },
-              "y": { "type": "integer", "minimum": 0 }
+              "x": { "type": "integer", "minimum": 0, "maximum": 200 },
+              "y": { "type": "integer", "minimum": 0, "maximum": 100 }
             },
             "required": ["groups", "x", "y"]
           }
