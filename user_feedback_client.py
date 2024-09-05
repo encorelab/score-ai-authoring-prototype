@@ -41,9 +41,9 @@ class UserFeedbackClient:
             "Create a conversational response for the user. In your response, do the following:\n"
             "1. If the 'user_input' contains any questions related the configuration:\n"
             "    - Provide an answer to the 'user_input' question, but only answer questions about this project configuration; if unrelated, state that you are an AI only able to assist with project configurations.\n"
-            "2. If the extracted configuration contains any changes compared to the original configuration:\n"
+            "2. If 'extracted_config' contains any changes compared to the 'original_config':\n"
             "    - Briefly report the types of changes made.\n"
-            "    - If a project name and at least one phase, board, and group were provided, state 'Everything looks good!'; if one is missing, state 'To complete the configuration...' followed by a clear and concise prompt to provide one of those missing items.\n"
+            "    - If a project name and at least one phase, board, and group are in 'extracted_config', state 'Everything looks good!'; if one is missing, state 'To complete the configuration...' followed by a clear and concise prompt to provide one of those missing items.\n"
             "    - Do not use any JSON in your response.\n\n"
         )
 

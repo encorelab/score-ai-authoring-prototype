@@ -34,7 +34,8 @@
               "type": "array", 
               "description": "An array of group names that can view the canvas during the phase specified by the key (which should be one of the phases defined in the 'phases' array).",
               "items": { "type": "string" }
-            }
+            },
+            "$comment": "Keys in this object should be phase names from the 'phases' array."
           },
           "bucket_view": {
             "type": "object", 
@@ -43,7 +44,8 @@
               "type": "array", 
               "description": "An array of group names that can view the bucket view during the phase specified by the key (which should be one of the phases defined in the 'phases' array).",
               "items": { "type": "string" }
-            }
+            },
+            "$comment": "Keys in this object should be phase names from the 'phases' array."
           },
           "buckets": {
             "type": "array",
@@ -60,7 +62,8 @@
               "type": "array", 
               "description": "An array of group names that can view the monitor view during the phase specified by the key (which should be one of the phases defined in the 'phases' array).",
               "items": { "type": "string" }
-            }
+            },
+            "$comment": "Keys in this object should be phase names from the 'phases' array."
           },
           "todo": {
             "type": "object", 
@@ -69,7 +72,8 @@
               "type": "array", 
               "description": "An array of group names that can view the TODO view during the phase specified by the key (which should be one of the phases defined in the 'phases' array).",
               "items": { "type": "string" }
-            }
+            },
+            "$comment": "Keys in this object should be phase names from the 'phases' array."
           },
           "workspace": {
             "type": "object",
@@ -78,7 +82,8 @@
               "type": "array", 
               "description": "An array of group names that can view the workspace during the phase specified by the key (which should be one of the phases defined in the 'phases' array).",
               "items": { "type": "string" }
-            }
+            },
+            "$comment": "Keys in this object should be phase names from the 'phases' array."
           }
         },
         "required": ["board_name"]
@@ -93,11 +98,11 @@
     },
     "accounts": {
       "type": "object",
-      "description": "Defines the various accounts (students, teachers, devices), their group assignments, and their classroom (x, y coordinates, where y=0 is the front).",
+      "description": "Defines the various accounts (students, teachers, devices), their group assignments, and their classroom locations (x, y coordinates) for each phase, where y=0 is the front.",
       "properties": {
         "students": {
           "type": "object",
-          "description": "A mapping of student names to their groups and classroom location.",
+          "description": "A mapping of student names to their groups and classroom locations for each phase.",
           "additionalProperties": {
             "type": "object",
             "properties": {
@@ -106,15 +111,25 @@
                 "items": { "type": "string" },
                 "minItems": 1
               },
-              "x": { "type": "integer", "minimum": 0, "maximum": 200 },
-              "y": { "type": "integer", "minimum": 0, "maximum": 100 }
+              "locations": { 
+                "type": "object",
+                "description": "Locations for each phase.",
+                "additionalProperties": {
+                  "type": "object",
+                  "properties": {
+                    "x": { "type": "integer", "minimum": 0, "maximum": 200 },
+                    "y": { "type": "integer", "minimum": 0, "maximum": 100 }
+                  },
+                  "required": ["x", "y"]
+                }
+              }
             },
-            "required": ["groups", "x", "y"]
+            "required": ["groups", "locations"]
           }
         },
-        "teachers": {
+        "teachers": { 
           "type": "object",
-          "description": "A mapping of teacher names to their groups and classroom location.",
+          "description": "A mapping of teacher names to their groups and classroom locations for each phase.",
           "additionalProperties": {
             "type": "object",
             "properties": {
@@ -123,15 +138,25 @@
                 "items": { "type": "string" },
                 "minItems": 1
               },
-              "x": { "type": "integer", "minimum": 0, "maximum": 200 },
-              "y": { "type": "integer", "minimum": 0, "maximum": 100 }
+              "locations": {
+                "type": "object",
+                "description": "Locations for each phase.",
+                "additionalProperties": {
+                  "type": "object",
+                  "properties": {
+                    "x": { "type": "integer", "minimum": 0, "maximum": 200 },
+                    "y": { "type": "integer", "minimum": 0, "maximum": 100 }
+                  },
+                  "required": ["x", "y"]
+                }
+              }
             },
-            "required": ["groups", "x", "y"]
+            "required": ["groups", "locations"]
           }
         },
         "devices": {
           "type": "object",
-          "description": "A mapping of device identifiers to their groups and classroom location.",
+          "description": "A mapping of device identifiers to their groups and classroom locations for each phase.",
           "additionalProperties": {
             "type": "object",
             "properties": {
@@ -140,14 +165,23 @@
                 "items": { "type": "string" },
                 "minItems": 1
               },
-              "x": { "type": "integer", "minimum": 0, "maximum": 200 },
-              "y": { "type": "integer", "minimum": 0, "maximum": 100 }
+              "locations": {
+                "type": "object",
+                "description": "Locations for each phase.",
+                "additionalProperties": {
+                  "type": "object",
+                  "properties": {
+                    "x": { "type": "integer", "minimum": 0, "maximum": 200 },
+                    "y": { "type": "integer", "minimum": 0, "maximum": 100 }
+                  },
+                  "required": ["x", "y"]
+                }
+              }
             },
-            "required": ["groups", "x", "y"]
+            "required": ["groups", "locations"]
           }
         }
-      },
-      "required": ["students", "teachers"] 
+      }
     }
   },
   "required": ["project_name", "phases", "boards", "groups", "accounts"]

@@ -15,132 +15,148 @@ def draw_classroom(stdscr, extracted_config):
     stdscr.clear()
     height, width = stdscr.getmaxyx()
 
-    # Define the classroom boundaries (adjust these values as needed)
-    classroom_top = 2
-    classroom_bottom = height - 4  # Leave space for feedback or other elements
+    # Check if there are any phases defined
+    if not extracted_config.get("phases"):
+        stdscr.addstr(height // 2, width // 2 - 10, "No phases defined yet.")
+        stdscr.refresh()
+        return
+
+    # Check if there are any boards defined
+    if not extracted_config.get("boards"):
+        stdscr.addstr(height // 2, width // 2 - 9, "No boards defined yet.")
+        stdscr.refresh()
+        return
+
+    # Get the current phase and its associated board
+    current_phase_index = 0
+    current_phase = extracted_config["phases"][current_phase_index]["name"]
+    current_board_name = extracted_config["phases"][current_phase_index]["board"]
+
+    # Find the board object based on the current_board_name
+    current_board = next((board for board in extracted_config["boards"] if board["board_name"] == current_board_name), None)
+    if current_board is None:
+        stdscr.addstr(height // 2, width // 2 - 12, "Board not found for this phase.")
+        stdscr.refresh()
+        return
+
+    # Draw the classroom display at the top
+    display_width = width - 4
+    display_height = 3  # Adjust height as needed
+    display_start_y = 0  # Start at the top of the screen
+    display_start_x = 2
+    textpad.rectangle(stdscr, display_start_y, display_start_x, display_start_y + display_height, display_start_x + display_width)
+    stdscr.addstr(display_start_y + 1, display_start_x + display_width // 2 - len(current_phase) // 2, current_phase)
+
+    # Define the classroom boundaries, considering the display height
+    classroom_top = display_start_y + display_height + 2
+    classroom_bottom = height - 4
     classroom_left = 2
     classroom_right = width - 2
 
     # Draw the classroom border
     textpad.rectangle(stdscr, classroom_top, classroom_left, classroom_bottom, classroom_right)
 
-    # Check if there are any phases defined
-    if not extracted_config.get("phases"):
-        stdscr.addstr(height // 2, width // 2 - 10, "No phases defined yet.")
-        stdscr.refresh()
-        stdscr.getch()
-        return  # Exit the function if no phases
-    
-    # Check if there are any boards defined
-    if not extracted_config.get("boards"):
-        stdscr.addstr(height // 2, width // 2 - 9, "No boards defined yet.")
-        stdscr.refresh()
-        stdscr.getch()
-        return
+    # Initialize color pairs for groups (up to 6 groups)
+    group_colors = [
+        curses.COLOR_RED,     # Group 1
+        curses.COLOR_GREEN,   # Group 2
+        curses.COLOR_BLUE,    # Group 3
+        curses.COLOR_YELLOW,  # Group 4
+        curses.COLOR_MAGENTA, # Group 5
+        curses.COLOR_CYAN     # Group 6
+    ]
 
-    # Get the current phase from extracted_config (assuming the first phase is shown initially)
-    current_phase_index = 0 
-    current_phase = extracted_config["phases"][current_phase_index]["name"]
+    for i, group in enumerate(extracted_config["groups"]):
+        if i < len(group_colors):
+            curses.init_pair(i + 1, group_colors[i], curses.COLOR_BLACK)
+        else:
+            # If you have more than 6 groups, you'll need to handle this case
+            # For example, you could cycle through colors again or use a different scheme
+            pass
 
-    # Draw the classroom display at the top
-    display_width = width - 4
-    display_height = 5
-    display_start_y = 1
-    display_start_x = 2
-    textpad.rectangle(stdscr, display_start_y, display_start_x, display_start_y + display_height, display_start_x + display_width)
-    stdscr.addstr(display_start_y + 2, display_start_x + display_width // 2 - len(current_phase) // 2, current_phase)
-
-    # Draw teacher icons
+    # Draw teacher icons and names 
     if not extracted_config["accounts"]["teachers"]:
         stdscr.addstr(height - 3, 2, "Error: No teachers defined yet.")
     else:
         for teacher_name, details in extracted_config["accounts"]["teachers"].items():
-            teacher_x = details["x"]
-            teacher_y = details["y"]
+            # Get teacher's location for the current phase
+            if current_phase in details["locations"]:
+                teacher_x = details["locations"][current_phase]["x"]
+                teacher_y = details["locations"][current_phase]["y"]
 
-            teacher_x = max(len(teacher_name), min(teacher_x, width - 2 - len(teacher_name)))  # Clamp x between 0 and max_x - 2 (leave space for icon)
-            teacher_y = max(0, min(teacher_y, height - 1))  # Clamp y between 0 and max_y - 1
-            stdscr.addstr(teacher_y, teacher_x, "👩‍🏫") 
+                # Ensure teacher is within classroom bounds
+                teacher_x = max(classroom_left + 1, min(teacher_x, classroom_right - 2))
+                teacher_y = max(classroom_top + 1, min(teacher_y, classroom_bottom - 1))
 
-            # Display teacher name above or below the icon
-            name_y = teacher_y - 1  # Display above by default
-            if name_y < 0: 
-                name_y = teacher_y + 1  # If above is out of bounds, display below
+                # Get the teacher's group and its color pair
+                group = details["groups"][0] 
+                color_pair = extracted_config["groups"].index(group) + 1
 
-            # Adjust x-coordinate to ensure the name stays within bounds
-            name_x = teacher_x - len(teacher_name) // 2
-            if name_x < 0:
-                name_x = 0
-            elif name_x + len(teacher_name) > width:
-                name_x = width - len(teacher_name)
+                stdscr.addstr(teacher_y, teacher_x, "👩‍🏫", curses.color_pair(color_pair)) 
 
-            stdscr.addstr(name_y, teacher_x - len(teacher_name) // 2, teacher_name)
+                # Display teacher name 
+                name_y = teacher_y - 1 
+                if name_y < 0: 
+                    name_y = teacher_y + 1 
 
-    # Draw student icons
-    if not extracted_config["accounts"]["students"]:
-        stdscr.addstr(height - 3, 2, "Error: No students defined yet.")
-    else:
-        for student_name, details in extracted_config["accounts"]["students"].items():
-            student_x = details["x"]
-            student_y = details["y"]
+                name_x = teacher_x - len(teacher_name) // 2
+                if name_x < 0:
+                    name_x = 0
+                elif name_x + len(teacher_name) > width:
+                    name_x = width - len(teacher_name)
 
-            student_x = max(len(student_name), min(student_x, width - 2 - len(student_name)))  # Clamp x between 0 and max_x - 2 (leave space for name)
-            student_y = max(0, min(student_y, height - 1))  # Clamp y between 0 and max_y - 1
+                stdscr.addstr(name_y, name_x, teacher_name, curses.color_pair(color_pair))
 
-            stdscr.addstr(student_y, student_x, "👩") 
+    # Draw student and device icons
+    for account_type in ["students", "devices"]:
+        if not extracted_config["accounts"][account_type]:
+            stdscr.addstr(height - 3, 2, f"Error: No {account_type} defined yet.")
+        else:
+            for name, details in extracted_config["accounts"][account_type].items():
+                # Get student/device location for the current phase
+                if current_phase in details["locations"]:
+                    x = details["locations"][current_phase]["x"]
+                    y = details["locations"][current_phase]["y"]
 
-            # Display teacher name above or below the icon
-            name_y = student_y - 1  # Display above by default
-            if name_y < 0: 
-                name_y = student_y + 1  # If above is out of bounds, display below
+                    # Ensure student/device is within classroom bounds
+                    x = max(classroom_left + 1, min(x, classroom_right - 2))
+                    y = max(classroom_top + 1, min(y, classroom_bottom - 1))
 
-            # Adjust x-coordinate to ensure the name stays within bounds
-            name_x = student_x - len(student_name) // 2
-            if name_x < 0:
-                name_x = 0
-            elif name_x + len(student_name) > width:
-                name_x = width - len(student_name)
+                    # Get the first group the account belongs to and its color pair
+                    group = details["groups"][0]
+                    color_pair = extracted_config["groups"].index(group) + 1
 
-            stdscr.addstr(name_y, student_x - len(student_name) // 2, student_name)
+                    icon = "👩" if account_type == "students" else "💻"
+                    stdscr.addstr(y, x, icon, curses.color_pair(color_pair))
 
-    # Draw devices icons
-    if extracted_config["accounts"]["devices"]:
-        for device_name, details in extracted_config["accounts"]["devices"].items():
-            device_x = details["x"]
-            device_y = details["y"]
+                    # Display name above or below the icon
+                    name_y = y - 1 
+                    if name_y < 0: 
+                        name_y = y + 1
 
-            device_x = max(len(device_name), min(device_x, width - 2 - len(device_name)))  # Clamp x between 0 and max_x - 2 (leave space for icon)
-            device_y = max(0, min(device_y, height - 1))  # Clamp y between 0 and max_y - 1
-            stdscr.addstr(device_y, device_x, "💻") 
+                    name_x = x - len(name) // 2
+                    if name_x < 0:
+                        name_x = 0
+                    elif name_x + len(name) > width:
+                        name_x = width - len(name)
 
-            # Display teacher name above or below the icon
-            name_y = device_y - 1  # Display above by default
-            if name_y < 0: 
-                name_y = device_y + 1  # If above is out of bounds, display below
+                    stdscr.addstr(name_y, name_x, name, curses.color_pair(color_pair))
 
-            # Adjust x-coordinate to ensure the name stays within bounds
-            name_x = teacher_x - len(device_name) // 2
-            if name_x < 0:
-                name_x = 0
-            elif name_x + len(device_name) > width:
-                name_x = width - len(device_name)
 
-            stdscr.addstr(name_y, device_x - len(device_name) // 2, device_name)
-    
-    # Display resource visibility based on extracted_config
+    # Display resource visibility based on extracted_config and the current board
     resource_y = height // 2 + 4
     for resource_name in ["canvas", "bucket_view", "monitor_view", "todo", "workspace"]:
+        assigned_groups = ""
         stdscr.addstr(resource_y, 2, f"{resource_name.capitalize()}: ")
-        
-        # Check if the resource exists for the first board
-        if resource_name not in extracted_config["boards"][0]:
-            stdscr.addstr("Resource not defined yet.", curses.color_pair(1))  # You can customize the color
+
+        if resource_name not in current_board:
+            stdscr.addstr("Resource not defined yet.", curses.color_pair(1))
         else:
             for group in extracted_config['groups']:
-                if group in extracted_config["boards"][0][resource_name].get(current_phase, []):
-                    color_pair = extracted_config["groups"].index(group) + 1
-                    stdscr.addstr(group + " ", curses.color_pair(color_pair))
-        
+                if group in current_board[resource_name].get(current_phase, []):
+                    assigned_groups += group + ", "
+
+        stdscr.addstr(resource_y, 4 + len(resource_name), assigned_groups[:-2])
         resource_y += 1
 
     stdscr.refresh()
