@@ -33,7 +33,7 @@ This system uses a combination of:
 
 ## How to Use
 
-1. **Setup:**
+1. **Prerequisites:**
    - Clone this repository.
    - **Install Dependencies:** `pip install -r requirements.txt`
    - **Environment Variables:** Create a `.env` file in the project root directory and add the following:
@@ -41,6 +41,10 @@ This system uses a combination of:
       PROJECT_ID=your-project-id
       LOCATION=your-project-location (e.g., us-central1)
       GEMINI_MODEL=text-bison@001
+      ```
+   - **Log in to Google Cloud:** 
+      ```bash
+      gcloud auth application-default login
       ```
 
 2. **Run Tests**
@@ -53,11 +57,5 @@ python -m unittest discover tests
    - From the project root directory, run `python ck_designer.py`.
    - Follow the prompts to describe your project configuration.
    - The system will generate a JSON configuration file based on your input.
-
-## Example Usage
-
-```bash
-python main.py
-```
 
 # You'll be guided through defining your CK Board project
